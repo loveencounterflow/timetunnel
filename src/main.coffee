@@ -42,29 +42,43 @@ class @Tunneltext extends Multimix
   # @include require './declaring'
 
   #---------------------------------------------------------------------------------------------------------
-  constructor: ( chrs = null ) ->
+  constructor: ( chrs = '\x10\x11\x12\x13\x14' ) ->
     super()
-    chrs ?= '\x10\x11\x12\x13\x14'
     validate.tunneltext_chrs chrs
-    chrs  = Array.from chrs
+    @chrs                 = Array.from chrs
     #.......................................................................................................
-    chr_count = chrs.length
-    delta               = ( chr_count + 1 ) / 2 - 1
-    master              = chrs[ chr_count - delta - 1 ]
-    meta_chr_patterns   = ( /// #{esc_re chrs[ idx ]} ///g            for idx in [ 0 .. delta ] )
-    target_seq_chrs     = ( "#{master}#{chrs[ idx + delta ]}"         for idx in [ 0 .. delta ] )
-    target_seq_patterns = ( /// #{esc_re target_seq_chrs[ idx ]} ///g for idx in [ 0 .. delta ] )
-    cloaked             = chrs[ 0 ... delta ]
+    @chr_count            = @chrs.length
+    @delta                = ( @chr_count + 1 ) / 2 - 1
+    @master               = @chrs[ @chr_count - @delta - 1 ]
+    @meta_chr_patterns    = ( /// #{esc_re @chrs[ idx ]} ///gu            for idx in [ 0 .. @delta ] )
+    @target_seq_chrs      = ( "#{@master}#{@chrs[ idx + @delta ]}"        for idx in [ 0 .. @delta ] )
+    @target_seq_patterns  = ( /// #{esc_re @target_seq_chrs[ idx ]} ///gu for idx in [ 0 .. @delta ] )
+    @cloaked              = @chrs[ 0 ... @delta ]
 
-    debug 'µhd', 'delta:                ', rpr               delta
-    debug 'µhd', 'master:               ', rpr              master
-    debug 'µhd', 'meta_chr_patterns:    ', rpr   meta_chr_patterns
-    debug 'µhd', 'target_seq_chrs:      ', rpr     target_seq_chrs
-    debug 'µhd', 'target_seq_patterns:  ', rpr target_seq_patterns
-    debug 'µhd', 'cloaked:              ', rpr             cloaked
+    debug 'µhd', '@delta:                ', rpr @delta
+    debug 'µhd', '@master:               ', rpr @master
+    debug 'µhd', '@meta_chr_patterns:    ', rpr @meta_chr_patterns
+    debug 'µhd', '@target_seq_chrs:      ', rpr @target_seq_chrs
+    debug 'µhd', '@target_seq_patterns:  ', rpr @target_seq_patterns
+    debug 'µhd', '@cloaked:              ', rpr @cloaked
+
+  #---------------------------------------------------------------------------------------------------------
+  hide: ( text ) ->
+    R = text
+    for idx in [ @delta .. 0 ] by -1
+      R = R.replace @meta_chr_patterns[ idx ], @target_seq_chrs[ idx ]
+    return R
+
+  #---------------------------------------------------------------------------------------------------------
+  reveal: ( text ) ->
+    R = text
+    for idx in [ 0 .. @delta ] by +1
+      R = R.replace @target_seq_patterns[ idx ], @chrs[ idx ]
+    return R
 
 
-new @Tunneltext 'abcxy'
-
+tnl = new @Tunneltext 'abcde'
+debug 'µ37ujs', tnl
+debug 'µ37ujs', tnl.hide 'abcdefghxyz'
 
 
