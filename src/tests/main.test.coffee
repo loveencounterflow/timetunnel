@@ -43,9 +43,12 @@ TUNNELTEXT                = require '../..'
 #-----------------------------------------------------------------------------------------------------------
 @[ "tunnels: hiding" ] = ( T, done ) ->
   probes_and_matchers = [
-    [['abcde',['backslash',], 'abcdefghxyz'],'cccdcedefghxyz',null,]
-    [['abcde',['backslash',], 'abc\\defghxyz'],'cccdceaB100befghxyz',null,]
-    [['abcde',['backslash','htmlish',], 'abc\\def <tag/> ghxyz'],'cccdceaB100bef aT0b ghxyz',null,]
+    [['abcde',['remove_backslash',], 'abcdefghxyz'],'cccdcedefghxyz',null,]
+    [['abcde',['remove_backslash',], 'abc\\defghxyz'],'cccdcea0befghxyz',null,]
+    [['abcde',['keep_backslash',], 'abc\\defghxyz'],'cccdcea0befghxyz',null,]
+    [['abcde',['keep_backslash',], 'abc\\defgh\\xyz'],'cccdcea0befgha1byz',null,]
+    [[null,['keep_backslash',], 'abc\\defgh\\xyz'],'abc\u00100\u0011efgh\u00101\u0011yz',null,]
+    [['abcde',['remove_backslash','htmlish',], 'abc\\def <tag/> ghxyz'],'cccdcea0bef a1b ghxyz',null,]
     # [['abc',null],null,'not a valid tunneltext_chrs',]
     ]
   #.........................................................................................................
@@ -65,8 +68,11 @@ TUNNELTEXT                = require '../..'
 #-----------------------------------------------------------------------------------------------------------
 @[ "tunnels: hiding and revealing" ] = ( T, done ) ->
   probes_and_matchers = [
-    [['abcde',['backslash',], 'abcdefghxyz'],'abcdefghxyz',null,]
-    [['abcde',['backslash',], 'abc\\defghxyz'],'abc\\defghxyz',null,]
+    [['abcde',['remove_backslash',], 'abcdefghxyz'],'abcdefghxyz',null,]
+    [['abcde',['remove_backslash',], 'abcdefghxyz'],'abcdefghxyz',null,]
+    [['abcde',['keep_backslash',], 'abc\\defghxyz'],'abc\\defghxyz',null,]
+    [[null,['keep_backslash',], 'abc\\defgh\\xyz'],'abc\\defgh\\xyz',null,]
+    [['abcde',['remove_backslash','htmlish',], 'abc\\def <tag/> ghxyz'],'abcdef <tag/> ghxyz',null,]
     # [['abc',null],null,'not a valid tunneltext_chrs',]
     ]
   #.........................................................................................................
@@ -83,33 +89,12 @@ TUNNELTEXT                = require '../..'
       resolve result
   done()
 
-#-----------------------------------------------------------------------------------------------------------
-@[ "tunnels: hiding, reverting" ] = ( T, done ) ->
-  probes_and_matchers = [
-    [['abcde',['backslash',], 'abcdefghxyz'],'abcdefghxyz',null,]
-    [['abcde',['backslash',], 'abc\\defghxyz'],'abcdefghxyz',null,]
-    [['abcde',['backslash','htmlish',], 'abc\\def <tag/> ghxyz'],'abcdef <tag/> ghxyz',null,]
-    # [['abc',null],null,'not a valid tunneltext_chrs',]
-    ]
-  #.........................................................................................................
-  for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
-      [ chrs, tunnel_names, text, ] = probe
-      tnl = new TUNNELTEXT.Tunneltext chrs
-      #.....................................................................................................
-      for tunnel_name in tunnel_names
-        tunnel_factory = TUNNELTEXT.tunnels[ tunnel_name ]
-        tnl.add_tunnel tunnel_factory
-      #.....................................................................................................
-      result = tnl.revert tnl.hide text
-      resolve result
-  done()
-
 
 
 ############################################################################################################
 unless module.parent?
   test @
-  # test @[ "xxx" ]
+  # test @[ "tunnels: hiding" ]
+  # test @[ "tunnels: hiding and revealing" ]
 
 
