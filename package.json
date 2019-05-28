@@ -4,7 +4,7 @@
   "description": "Encode regions of text that match some pattern, recover them after doing some processing",
   "main": "lib/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "coffee --map -o lib -c src && node lib/tests/main.test.js"
   },
   "repository": {
     "type": "git",
