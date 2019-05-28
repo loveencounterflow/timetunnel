@@ -55,12 +55,12 @@ class @Tunneltext extends Multimix
     @target_seq_patterns  = ( /// #{esc_re @target_seq_chrs[ idx ]} ///gu for idx in [ 0 .. @delta ] )
     @cloaked              = @chrs[ 0 ... @delta ]
 
-    debug 'µhd', '@delta:                ', rpr @delta
-    debug 'µhd', '@master:               ', rpr @master
-    debug 'µhd', '@meta_chr_patterns:    ', rpr @meta_chr_patterns
-    debug 'µhd', '@target_seq_chrs:      ', rpr @target_seq_chrs
-    debug 'µhd', '@target_seq_patterns:  ', rpr @target_seq_patterns
-    debug 'µhd', '@cloaked:              ', rpr @cloaked
+    # debug 'µhd', '@delta:                ', rpr @delta
+    # debug 'µhd', '@master:               ', rpr @master
+    # debug 'µhd', '@meta_chr_patterns:    ', rpr @meta_chr_patterns
+    # debug 'µhd', '@target_seq_chrs:      ', rpr @target_seq_chrs
+    # debug 'µhd', '@target_seq_patterns:  ', rpr @target_seq_patterns
+    # debug 'µhd', '@cloaked:              ', rpr @cloaked
 
   #---------------------------------------------------------------------------------------------------------
   hide: ( text ) ->
@@ -77,8 +77,5 @@ class @Tunneltext extends Multimix
     return R
 
 
-tnl = new @Tunneltext 'abcde'
-debug 'µ37ujs', tnl
-debug 'µ37ujs', tnl.hide 'abcdefghxyz'
 
 
