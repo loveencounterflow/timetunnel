@@ -90,6 +90,24 @@ class @Tunneltext extends Multimix
     return R
 
   #---------------------------------------------------------------------------------------------------------
+  _cache:   []
+  _index:   {}
+
+  #---------------------------------------------------------------------------------------------------------
+  store: ( x ) ->
+    return R if ( R = @_index[ x ] )?
+    R             = @_cache.length
+    @_index[ x ]  = R
+    @_cache.push x
+    return R
+
+  #---------------------------------------------------------------------------------------------------------
+  retrieve: ( idx ) ->
+    unless ( idx >= 0 ) and ( idx < @_cache.length )
+      throw new Error "µ44292 index out of bounds, got #{rpr idx}"
+    return @_cache[ idx ]
+
+  #---------------------------------------------------------------------------------------------------------
   add_tunnel: ( tunnel_factory ) ->
     validate.tunneltext_tunnel_factory             tunnel_factory
     validate.tunneltext_tunnel          ( tunnel = tunnel_factory @ )
