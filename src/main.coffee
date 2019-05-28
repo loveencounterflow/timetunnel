@@ -151,6 +151,24 @@ class @Tunneltext extends Multimix
     #---------------------------------------------------------------------------------------------------------
     return { name: 'backslash', hide, reveal, remove, }
 
-
+  #-----------------------------------------------------------------------------------------------------------
+  htmlish: ( tnl ) ->
+    { cloaked } = tnl
+    if cloaked.length < 2 then    start_chr = stop_chr    = cloaked[ 0 ]
+    else                        [ start_chr,  stop_chr, ] = cloaked
+    hide_tag_pattern    = /// ( < [^>]*? > ) ///gu
+    reveal_tag_pattern  = /// #{esc_re start_chr} T ( [ 0-9 ]+ ) #{esc_re stop_chr} ///gu
+    #---------------------------------------------------------------------------------------------------------
+    hide = ( text ) =>
+      R = text
+      R = R.replace hide_tag_pattern, ( _, $1 ) =>
+        cache_idx = tnl.store $1
+        return "#{start_chr}T#{cache_idx}#{stop_chr}"
+      return R
+    #.........................................................................................................
+    reveal = ( text ) =>
+      return text.replace reveal_tag_pattern, ( _, $1 ) => tnl.retrieve parseInt $1, 10
+    #---------------------------------------------------------------------------------------------------------
+    return { name: 'backslash', hide, reveal, }
 
 
