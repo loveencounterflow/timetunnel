@@ -75,10 +75,10 @@ class @Tunneltext extends Multimix
   #---------------------------------------------------------------------------------------------------------
   reveal: ( text ) ->
     R = text
-    for idx in [ 0 .. @delta ] by +1
-      R = R.replace @target_seq_patterns[ idx ], @chrs[ idx ]
     for idx in [ @tunnels.length - 1 .. 0 ] by -1
       R = @tunnels[ idx ].reveal R
+    for idx in [ 0 .. @delta ] by +1
+      R = R.replace @target_seq_patterns[ idx ], @chrs[ idx ]
     return R
 
   #---------------------------------------------------------------------------------------------------------
