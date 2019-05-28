@@ -45,6 +45,7 @@ TUNNELTEXT                = require '../..'
   probes_and_matchers = [
     [['abcde',['backslash',], 'abcdefghxyz'],'cccdcedefghxyz',null,]
     [['abcde',['backslash',], 'abc\\defghxyz'],'cccdceaB100befghxyz',null,]
+    [['abcde',['backslash','htmlish',], 'abc\\def <tag/> ghxyz'],'cccdceaB100bef aT0b ghxyz',null,]
     # [['abc',null],null,'not a valid tunneltext_chrs',]
     ]
   #.........................................................................................................
@@ -87,6 +88,7 @@ TUNNELTEXT                = require '../..'
   probes_and_matchers = [
     [['abcde',['backslash',], 'abcdefghxyz'],'abcdefghxyz',null,]
     [['abcde',['backslash',], 'abc\\defghxyz'],'abcdefghxyz',null,]
+    [['abcde',['backslash','htmlish',], 'abc\\def <tag/> ghxyz'],'abcdef <tag/> ghxyz',null,]
     # [['abc',null],null,'not a valid tunneltext_chrs',]
     ]
   #.........................................................................................................
