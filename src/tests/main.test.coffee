@@ -26,9 +26,10 @@ TUNNELTEXT                = require '../..'
 # require '../exception-handler'
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "xxx" ] = ( T, done ) ->
+@[ "basic escaping" ] = ( T, done ) ->
   probes_and_matchers = [
     [['abcde','abcdefghxyz'],'cccdcedefghxyz',null,]
+    [['abc',null],null,'not a valid tunneltext_chrs',]
     ]
   #.........................................................................................................
   for [ probe, matcher, error, ] in probes_and_matchers
@@ -36,12 +37,69 @@ TUNNELTEXT                = require '../..'
       [ chrs, text, ] = probe
       tnl = new TUNNELTEXT.Tunneltext chrs
       result = tnl.hide text
-      # try
-      # result = await IC.read_definitions_from_text probe
-      # catch error
-      #   return resolve error
-      # debug '29929', xrpr2 result
-      # resolve result
+      resolve result
+  done()
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "tunnels: hiding" ] = ( T, done ) ->
+  probes_and_matchers = [
+    [['abcde',['backslash',], 'abcdefghxyz'],'cccdcedefghxyz',null,]
+    [['abcde',['backslash',], 'abc\\defghxyz'],'cccdceaB100befghxyz',null,]
+    # [['abc',null],null,'not a valid tunneltext_chrs',]
+    ]
+  #.........................................................................................................
+  for [ probe, matcher, error, ] in probes_and_matchers
+    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+      [ chrs, tunnel_names, text, ] = probe
+      tnl = new TUNNELTEXT.Tunneltext chrs
+      #.....................................................................................................
+      for tunnel_name in tunnel_names
+        tunnel_factory = TUNNELTEXT.tunnels[ tunnel_name ]
+        tnl.add_tunnel tunnel_factory
+      #.....................................................................................................
+      result = tnl.hide text
+      resolve result
+  done()
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "tunnels: hiding and revealing" ] = ( T, done ) ->
+  probes_and_matchers = [
+    [['abcde',['backslash',], 'abcdefghxyz'],'abcdefghxyz',null,]
+    [['abcde',['backslash',], 'abc\\defghxyz'],'abc\\defghxyz',null,]
+    # [['abc',null],null,'not a valid tunneltext_chrs',]
+    ]
+  #.........................................................................................................
+  for [ probe, matcher, error, ] in probes_and_matchers
+    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+      [ chrs, tunnel_names, text, ] = probe
+      tnl = new TUNNELTEXT.Tunneltext chrs
+      #.....................................................................................................
+      for tunnel_name in tunnel_names
+        tunnel_factory = TUNNELTEXT.tunnels[ tunnel_name ]
+        tnl.add_tunnel tunnel_factory
+      #.....................................................................................................
+      result = tnl.reveal tnl.hide text
+      resolve result
+  done()
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "tunnels: hiding, reverting" ] = ( T, done ) ->
+  probes_and_matchers = [
+    [['abcde',['backslash',], 'abcdefghxyz'],'abcdefghxyz',null,]
+    [['abcde',['backslash',], 'abc\\defghxyz'],'abcdefghxyz',null,]
+    # [['abc',null],null,'not a valid tunneltext_chrs',]
+    ]
+  #.........................................................................................................
+  for [ probe, matcher, error, ] in probes_and_matchers
+    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+      [ chrs, tunnel_names, text, ] = probe
+      tnl = new TUNNELTEXT.Tunneltext chrs
+      #.....................................................................................................
+      for tunnel_name in tunnel_names
+        tunnel_factory = TUNNELTEXT.tunnels[ tunnel_name ]
+        tnl.add_tunnel tunnel_factory
+      #.....................................................................................................
+      result = tnl.revert tnl.hide text
       resolve result
   done()
 

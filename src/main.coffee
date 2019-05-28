@@ -54,6 +54,7 @@ class @Tunneltext extends Multimix
     @target_seq_chrs      = ( "#{@master}#{@chrs[ idx + @delta ]}"        for idx in [ 0 .. @delta ] )
     @target_seq_patterns  = ( /// #{esc_re @target_seq_chrs[ idx ]} ///gu for idx in [ 0 .. @delta ] )
     @cloaked              = @chrs[ 0 ... @delta ]
+    @tunnels              = []
 
     # debug 'µhd', '@delta:                ', rpr @delta
     # debug 'µhd', '@master:               ', rpr @master
@@ -67,6 +68,8 @@ class @Tunneltext extends Multimix
     R = text
     for idx in [ @delta .. 0 ] by -1
       R = R.replace @meta_chr_patterns[ idx ], @target_seq_chrs[ idx ]
+    for tunnel in @tunnels
+      R = tunnel.hide R
     return R
 
   #---------------------------------------------------------------------------------------------------------
@@ -74,7 +77,61 @@ class @Tunneltext extends Multimix
     R = text
     for idx in [ 0 .. @delta ] by +1
       R = R.replace @target_seq_patterns[ idx ], @chrs[ idx ]
+    for idx in [ @tunnels.length - 1 .. 0 ] by -1
+      R = @tunnels[ idx ].reveal R
     return R
+
+  #---------------------------------------------------------------------------------------------------------
+  revert: ( text ) ->
+    R = @reveal text
+    for idx in [ @tunnels.length - 1 .. 0 ] by -1
+      continue unless ( tunnel = @tunnels[ idx ] ).remove?
+      R = tunnel.remove R
+    return R
+
+  #---------------------------------------------------------------------------------------------------------
+  add_tunnel: ( tunnel_factory ) ->
+    validate.tunneltext_tunnel_factory             tunnel_factory
+    validate.tunneltext_tunnel          ( tunnel = tunnel_factory @ )
+    @tunnels.push tunnel
+
+#-----------------------------------------------------------------------------------------------------------
+### TAINT either abolish tunnel letter (`B` in this case) or pass it in as argument ###
+@tunnels =
+  'backslash': ( tnl ) ->
+    { cloaked } = tnl
+    if cloaked.length < 2 then    start_chr = stop_chr    = cloaked[ 0 ]
+    else                        [ start_chr,  stop_chr, ] = cloaked
+    base = 10
+    ### `oc`: 'original character' ###
+    _oc_backslash      = '\\'
+    ### `op`: 'original pattern' ###
+    _oce_backslash     = esc_re _oc_backslash
+    _mcp_backslash     = ///
+      #{esc_re _oc_backslash}
+      ( . ) ///gu
+    _tsp_backslash     = /// #{esc_re start_chr} B ( [ 0-9 a-z ]+ ) #{esc_re stop_chr} ///gu
+    ### `rm`: 'remove' ###
+    _rm_backslash      = /// #{esc_re _oc_backslash} ( . ) ///gu
+    #---------------------------------------------------------------------------------------------------------
+    hide = ( text ) =>
+      R = text
+      R = R.replace _mcp_backslash, ( _, $1 ) ->
+        cid_txt = ( $1.codePointAt 0 ).toString base
+        return "#{start_chr}B#{cid_txt}#{stop_chr}"
+      return R
+    #.........................................................................................................
+    reveal = ( text ) =>
+      R = text
+      R = R.replace _tsp_backslash, ( _, $1 ) ->
+        chr = String.fromCodePoint parseInt $1, base
+        return "#{_oc_backslash}#{chr}"
+      return R
+    #.........................................................................................................
+    remove = ( text ) =>
+      return text.replace _rm_backslash, '$1'
+    #---------------------------------------------------------------------------------------------------------
+    return { name: 'backslash', hide, reveal, remove, }
 
 
 
