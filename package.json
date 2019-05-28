@@ -1,0 +1,34 @@
+{
+  "name": "tunneltext",
+  "version": "0.0.1",
+  "description": "Encode regions of text that match some pattern, recover them after doing some processing",
+  "main": "lib/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loveencounterflow/tunneltext.git"
+  },
+  "keywords": [
+    "tunnel",
+    "text",
+    "textprocessing",
+    "escape",
+    "regex"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/loveencounterflow/tunneltext/issues"
+  },
+  "homepage": "https://github.com/loveencounterflow/tunneltext#readme",
+  "dependencies": {
+    "cnd": "^4.6.0",
+    "intertype": "^2.4.0",
+    "multimix": "^2.0.0"
+  },
+  "devDependencies": {
+    "guy-test": "^1.4.0"
+  }
+}
