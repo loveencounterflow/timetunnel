@@ -1,6 +1,6 @@
 {
-  "name": "tunneltext",
-  "version": "0.0.3",
+  "name": "timetunnel",
+  "version": "0.0.4",
   "description": "Encode regions of text that match some pattern, recover them after doing some processing",
   "main": "lib/main.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/loveencounterflow/tunneltext.git"
+    "url": "git+https://github.com/loveencounterflow/timetunnel.git"
   },
   "keywords": [
     "tunnel",
@@ -20,9 +20,9 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/loveencounterflow/tunneltext/issues"
+    "url": "https://github.com/loveencounterflow/timetunnel/issues"
   },
-  "homepage": "https://github.com/loveencounterflow/tunneltext#readme",
+  "homepage": "https://github.com/loveencounterflow/timetunnel#readme",
   "dependencies": {
     "cnd": "^4.6.0",
     "intertype": "^2.4.0",

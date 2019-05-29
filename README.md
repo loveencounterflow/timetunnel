@@ -1,8 +1,8 @@
 
 
-# TunnelText
+# TimeTunnel
 
-TunnelText is a helper module for text processing tasks where certain portions of a given text should be
+TimeTunnel is a helper module for text processing tasks where certain portions of a given text should be
 hidden from the view of some text processing functions. For example, let's assume you wanted to parse some
 Markdown text and you already have a parsing function, `html = P.parse text`.
 
@@ -14,18 +14,18 @@ Second, the parser does not recognize tags with arbitrary names and standalone t
 it tries to be helpful and normalizes unclosed tags and so on, all of which interferes with your idea of how
 the thing should work.
 
-This is where TunnelText comes in: it applies a simple, configurable text transformation to your text which
+This is where TimeTunnel comes in: it applies a simple, configurable text transformation to your text which
 hides 'offending' content. You can then process the text with the parser of your choice, and then reveal
 the hidden content once that is done:
 
 ```coffee
 #--------------------------------------------------------
-# Create a TunnelText instance:
+# Create a TimeTunnel instance:
 
-TUNNELTEXT      = require 'tunneltext'
-tnl             = new TUNNELTEXT.Tunneltext()
-tnl.add_tunnel TUNNELTEXT.tunnels.remove_backslash
-tnl.add_tunnel TUNNELTEXT.tunnels.htmlish
+TIMETUNNEL      = require 'timetunnel'
+tnl             = new TIMETUNNEL.Timetunnel()
+tnl.add_tunnel TIMETUNNEL.tunnels.remove_backslash
+tnl.add_tunnel TIMETUNNEL.tunnels.htmlish
 
 #--------------------------------------------------------
 # Hide 'offending' text,
