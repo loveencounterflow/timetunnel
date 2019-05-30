@@ -21,6 +21,16 @@ intertype                 = new Intertype module.exports
 
 
 #-----------------------------------------------------------------------------------------------------------
+@declare 'timetunnel_collisionfree_texts',
+  tests:
+    "x and y are texts":                    ( x, y ) -> ( @isa.text x ) and ( @isa.text y )
+    "x and y have no characters in common": ( x, y ) ->
+      x = Array.from x
+      y = Array.from y
+      ### TAINT could be optimized ###
+      return ( x.every ( xx ) -> xx not in y ) and ( y.every ( yy ) -> yy not in x )
+
+#-----------------------------------------------------------------------------------------------------------
 @declare 'timetunnel_settings',
   tests:
     "x is an object":                         ( x ) -> @isa.object x
