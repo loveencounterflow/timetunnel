@@ -19,6 +19,15 @@ jr                        = JSON.stringify
 Intertype                 = ( require 'intertype' ).Intertype
 intertype                 = new Intertype module.exports
 
+
+#-----------------------------------------------------------------------------------------------------------
+@declare 'timetunnel_settings',
+  tests:
+    "x is an object":                         ( x ) -> @isa.object x
+    "x.guards may be a timetunnel_guards":    ( x ) -> ( not x.guards? ) or @isa.timetunnel_guards x.guards
+    ### NOTE tested by `integer-codec` ###
+    # "x.intalph may be a timetunnel_intalph":  ( x ) -> ( not x.intalph )? or @isa.timetunnel_intalph x.intalph
+
 #-----------------------------------------------------------------------------------------------------------
 @declare 'timetunnel_distinctive_nonempty_chrs',
   tests:
@@ -28,7 +37,7 @@ intertype                 = new Intertype module.exports
       return ( size > 0 ) and ( size is ( @size_of x, 'codepoints' ) )
 
 #-----------------------------------------------------------------------------------------------------------
-@declare 'timetunnel_chrs',
+@declare 'timetunnel_guards',
   tests:
     "x is a text":                  ( x ) -> @isa.text x
     "x has 5 distinct codepoints":  ( x ) -> ( new Set Array.from x ).size is 5
