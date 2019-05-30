@@ -24,7 +24,8 @@ intertype                 = new Intertype module.exports
   tests:
     "x is a text":                          ( x ) -> @isa.text x
     "x has 1 or more distinct codepoints":  ( x ) ->
-      return ( @size_of new Set Array.from x ) is ( @size_of x, 'codepoints' )
+      size = @size_of new Set Array.from x
+      return ( size > 0 ) and ( size is ( @size_of x, 'codepoints' ) )
 
 #-----------------------------------------------------------------------------------------------------------
 @declare 'timetunnel_chrs',
