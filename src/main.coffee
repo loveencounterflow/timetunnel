@@ -46,6 +46,8 @@ class @Timetunnel extends Multimix
     validate.timetunnel_settings settings
     @guards               = settings?.guards  ? '\x10\x11\x12\x13\x14'
     @intalph              = settings?.intalph ? '0123456789'
+    ### TAINT reduplicates some tests, `Array.from()` calls ###
+    validate.timetunnel_collisionfree_texts @guards, @intalph
     @guards               = Array.from @guards
     #.......................................................................................................
     @chr_count            = @guards.length
