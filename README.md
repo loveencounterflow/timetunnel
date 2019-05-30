@@ -6,25 +6,28 @@
 # TimeTunnel
 
 TimeTunnel is a helper module for text processing tasks where certain portions of a given text should be
-hidden from the view of some text processing functions. For example, let's assume you wanted to parse some
-Markdown text and you already have a parsing function, `html = P.parse text`.
+hidden from the view of some text processing functions.
 
-Let's assume that parser works quite OK but it has two flaws: it does not recognize backslashed-escaped
-constructs, so it renders `foo \*bar\* baz` as `foo \<em>bar</em>\ baz` where you expected the asterisks not
-to trigger a markup and get `foo *bar* baz` instead.
-
-Second, the parser does not recognize tags with arbitrary names and standalone tags like `<xy/>`; moreover,
-it tries to be helpful and normalizes unclosed tags and so on, all of which interferes with your idea of how
-the thing should work.
+For example, let's assume you wanted to parse some
+Markdown text and you already have a parsing function, `html = P.parse text`. Let's assume that parser works
+quite OK but it has two flaws: it does not recognize backslashed-escaped constructs, so it renders `foo
+\*bar\* baz` as `foo \<em>bar</em>\ baz` where you expected the asterisks not to trigger a markup and get
+`foo *bar* baz` instead. Second, the parser does not recognize tags with arbitrary names and standalone tags
+like `<xy/>`; moreover, it tries to be helpful and normalizes unclosed tags and so on, all of which
+interferes with your idea of how the thing should work.
 
 This is where TimeTunnel comes in: it applies a simple, configurable text transformation to your text which
-hides 'offending' content. You can then process the text with the parser of your choice, and then reveal the
-hidden content once that is done. In essence, the added value of TimeTunnel is that you can prepare strings
-in such a way that text processing can be simplified. For example, in many situations you will wantr to look
-for special characters or constructs hedged by special characters; quite often, you also want to allow
-escaping such active characters with a `\` backslash. But now you have a problem, because the processing
-step proper has to implement backslash-escaping, making it more complicated (also, if you don't control the
-code of that processing step, adding such a facility may be not possible).
+hides 'offending' content. You can then process the text with the parser of your choice, and, that being
+done, reveal the hidden content.
+
+In essence, the added value of TimeTunnel is that you can prepare strings in such a way that certain text
+processing tasks can be simplified.
+
+For example, in many situations you will want to look for special characters or constructs hedged by special
+characters; quite often, you also want to allow escaping such active characters with a `\` backslash. But
+now you have a problem, because the processing step proper has to implement backslash-escaping, making it
+more complicated (also, if you don't control the code of that processing step, adding such a facility may be
+not possible).
 
 Suppose you want to find run-of-the-mill quoted string literals in a text that are indicated by surrounding
 pairs of `"` (double quotes) and `'` (single quotes); also, within a literal, both `\"` and `\'` can be used
@@ -46,8 +49,10 @@ var x = f( "some string with [0]quotes[0]" );
 
 In that state, you can safely apply a simple-minded regex like `/"[^"]*"/` to your source to extract the
 (obfuscated) string literal and then apply the inverse replacements to obtain `some string with "quotes"`.
-TimeTunnel does exactly this, plus it makes sure upfront that any occurrances of bracketing characters are
-hidden as well so reconstituting the original can be done with confidence.
+TimeTunnel does exactly this: it allows you to define regular expressions (so-called 'tunnels') to define
+what to hide and to define character sets ('guards' and an 'integer alphabet') that define how to hide such
+texts, plus it makes sure upfront that any occurrances of bracketing characters (as defined by the guards)
+are hidden as well so reconstituting the original can be done with confidence.
 
 
 
