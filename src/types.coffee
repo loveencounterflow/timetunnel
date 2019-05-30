@@ -7,7 +7,7 @@
 ############################################################################################################
 CND                       = require 'cnd'
 rpr                       = CND.rpr
-badge                     = 'TUNNELTEXT/TYPES'
+badge                     = 'TIMETUNNEL/TYPES'
 debug                     = CND.get_logger 'debug',     badge
 alert                     = CND.get_logger 'alert',     badge
 whisper                   = CND.get_logger 'whisper',   badge
@@ -20,13 +20,20 @@ Intertype                 = ( require 'intertype' ).Intertype
 intertype                 = new Intertype module.exports
 
 #-----------------------------------------------------------------------------------------------------------
-@declare 'tunneltext_chrs',
+@declare 'timetunnel_distinctive_nonempty_chrs',
+  tests:
+    "x is a text":                          ( x ) -> @isa.text x
+    "x has 1 or more distinct codepoints":  ( x ) ->
+      return ( @size_of new Set Array.from x ) is ( @size_of x, 'codepoints' )
+
+#-----------------------------------------------------------------------------------------------------------
+@declare 'timetunnel_chrs',
   tests:
     "x is a text":                  ( x ) -> @isa.text x
     "x has 5 distinct codepoints":  ( x ) -> ( new Set Array.from x ).size is 5
 
 #-----------------------------------------------------------------------------------------------------------
-@declare 'tunneltext_tunnel_pattern',
+@declare 'timetunnel_tunnel_pattern',
   tests:
     "x is a regex":                 ( x ) -> @isa.regex x
     "x has global flag":            ( x ) -> 'g' in x.flags

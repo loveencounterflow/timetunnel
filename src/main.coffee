@@ -6,7 +6,7 @@
 ############################################################################################################
 CND                       = require 'cnd'
 rpr                       = CND.rpr
-badge                     = 'TUNNELTEXT/MAIN'
+badge                     = 'TIMETUNNEL/MAIN'
 log                       = CND.get_logger 'plain',     badge
 info                      = CND.get_logger 'info',      badge
 whisper                   = CND.get_logger 'whisper',   badge
@@ -35,7 +35,7 @@ esc_re = ( text ) -> text.replace /[.*+?^${}()|[\]\\]/g, "\\$&"
 
 
 #===========================================================================================================
-class @Tunneltext extends Multimix
+class @Timetunnel extends Multimix
   # @extend   object_with_class_properties
   # @include require './cataloguing'
 
@@ -43,7 +43,7 @@ class @Tunneltext extends Multimix
   constructor: ( chrs = null ) ->
     super()
     chrs                 ?= '\x10\x11\x12\x13\x14'
-    validate.tunneltext_chrs chrs
+    validate.timetunnel_chrs chrs
     @chrs                 = Array.from chrs
     #.......................................................................................................
     @chr_count            = @chrs.length
@@ -92,7 +92,7 @@ class @Tunneltext extends Multimix
 
   #---------------------------------------------------------------------------------------------------------
   add_tunnel: ( pattern ) ->
-    validate.tunneltext_tunnel_pattern pattern
+    validate.timetunnel_tunnel_pattern pattern
     @tunnels.push pattern
 
 
