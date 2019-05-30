@@ -85,6 +85,10 @@ Once the TimeTunnel object `tnl` is instantiated, we can add 'tunnels' to it. A 
 expression with or without groups that tells `tnl` what portions of text to replace with markers that are
 essentially encoded and marked integers which act as indexes to a cache of string values that `tnl` builds.
 
+You can add any number of tunnels to a TimeTunnel; these will be applied in the order they were added when
+hiding, and in the reverse order when revealing. When a regular expression has groups, only the text that
+was captured by the first group will be revealed; when a regex has no groups, it will be treated as if the
+entire expression had been put into one group (so that will reveal the entire matched text).
 
 
 ```coffee
@@ -203,7 +207,25 @@ string literal hiding
 
 ## Presets
 
+(WIP)
 
+* guards
+	* lower ASCII
+	* ASCII
+	* upper ASCII
+
+* tunnels
+	* string literals
+	* HTML-ish tags
+	* backslashes (to be removed)
+	* backslashes (to be kept)
+
+* integer alphabets
+	* decimal
+	* binary
+	* hexadecimal
+	* control characters
+	* undefined Unicode
 
 
 
