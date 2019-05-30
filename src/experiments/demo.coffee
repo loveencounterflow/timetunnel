@@ -1,3 +1,22 @@
+
+
+
+"use strict"
+
+############################################################################################################
+CND                       = require 'cnd'
+rpr                       = CND.rpr
+badge                     = 'TIMETUNNEL/MAIN'
+log                       = CND.get_logger 'plain',     badge
+info                      = CND.get_logger 'info',      badge
+whisper                   = CND.get_logger 'whisper',   badge
+alert                     = CND.get_logger 'alert',     badge
+debug                     = CND.get_logger 'debug',     badge
+warn                      = CND.get_logger 'warn',      badge
+help                      = CND.get_logger 'help',      badge
+urge                      = CND.get_logger 'urge',      badge
+echo                      = CND.echo.bind CND
+
 #--------------------------------------------------------
 # Create a TimeTunnel instance:
 
@@ -21,30 +40,41 @@ original_text = "abcde A plain number 123, two bracketed ones: {123}, {124}"
 # process it,
 # finally recover tunneled parts:
 
-transform = ( tnl, original_text ) ->
+transform = ( tnl, original_text, message ) ->
   tunneled_text   = tnl.hide    original_text
   modified_text   = modify      tunneled_text
   uncovered_text  = tnl.reveal  modified_text
+  log '----------------------------'
+  log message
   log '(1)', rpr original_text
   log '(2)', rpr tunneled_text
   log '(3)', rpr modified_text
   log '(4)', rpr uncovered_text
   return uncovered_text
 
-tnl = new TIMETUNNEL.Timetunnel 'abcde'
+tnl = new TIMETUNNEL.Timetunnel 'abCDe'
 tnl.add_tunnel ///   \{ ( [0-9]+ ) \}   ///gu
-transform tnl, original_text
+transform tnl, original_text, "brackets not in group, removed"
 
-log '...'
-
-tnl = new TIMETUNNEL.Timetunnel 'abcde'
+tnl = new TIMETUNNEL.Timetunnel 'abCDe'
 tnl.add_tunnel /// ( \{   [0-9]+   \} ) ///gu
-transform tnl, original_text
+transform tnl, original_text, "brackets in group, not removed"
 
-log '...'
+tnl = new TIMETUNNEL.Timetunnel 'abCDe'
+tnl.add_tunnel /// \{   [0-9]+   \} ///gu
+transform tnl, original_text, "no group, equivalent to all grouped"
 
-tnl = new TIMETUNNEL.Timetunnel()
-tnl.add_tunnel /// ( \{   [0-9]+   \} ) ///gu
-transform tnl, original_text
+
+cs = [
+  'abcde'
+  'abCDE'
+  'abCDe'
+  'ABcde'
+  '()CDE' ]
+text = 'abcdeABCDE-CC-CD'
+for chrs in cs
+  tnl = new TIMETUNNEL.Timetunnel chrs
+  log ( rpr chrs ), ( rpr text ), '->', ( rpr tnl.hide text )
+
 
 
