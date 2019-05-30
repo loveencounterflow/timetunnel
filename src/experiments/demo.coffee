@@ -14,7 +14,7 @@ modify = ( text ) ->
     return '' + ( parseInt $0, 10 ) * 12
 
 #--------------------------------------------------------
-original_text = "abcde a plain number 123 and a bracketed one {123}"
+original_text = "abcde A plain number 123, two bracketed ones: {123}, {124}"
 
 #--------------------------------------------------------
 # Hide 'offending' original_text,

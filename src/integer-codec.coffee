@@ -107,8 +107,5 @@ validate_is_subset = ( x, y ) ->
 @decode = ( text, alphabet ) ->
   return parseInt ( @_convert text, alphabet, '0123456789' ), 10
 
-debug rpr @encode 512,'01'
-debug rpr @decode '10000','01' # 16
-debug rpr @decode '1000000000','01' # 512
 
 

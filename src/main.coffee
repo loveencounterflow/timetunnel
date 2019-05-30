@@ -19,6 +19,7 @@ echo                      = CND.echo.bind CND
 rainbow                   = CND.rainbow.bind CND
 { jr, }                   = CND
 Multimix                  = require 'multimix'
+INTCODEC                  = require './integer-codec'
 #...........................................................................................................
 types                     = require './types'
 { isa
@@ -79,15 +80,16 @@ class @Timetunnel extends Multimix
   _hide_pattern: ( pattern, text ) =>
     R = text
     R = R.replace pattern, ( _, $1 ) =>
-      cache_idx = @_store $1
-      return "#{@cloaked[ 0 ]}#{cache_idx}#{@cloaked[ 1 ]}"
+      cache_idx     = @_store $1
+      cache_idx_txt = INTCODEC.encode cache_idx, 'ÄÖ'
+      return "#{@cloaked[ 0 ]}#{cache_idx_txt}#{@cloaked[ 1 ]}"
     return R
 
   #---------------------------------------------------------------------------------------------------------
   _reveal_tunneled: ( text ) =>
     R = text
     while ( R.match @reveal_pattern )?
-      R = R.replace @reveal_pattern, ( _, $1 ) => @_retrieve parseInt $1, 10
+      R = R.replace @reveal_pattern, ( _, $1 ) => @_retrieve INTCODEC.decode $1, 'ÄÖ'
     return R
 
   #---------------------------------------------------------------------------------------------------------
