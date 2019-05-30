@@ -41,20 +41,21 @@ class @Timetunnel extends Multimix
   # @include require './cataloguing'
 
   #---------------------------------------------------------------------------------------------------------
-  constructor: ( chrs = null ) ->
+  constructor: ( settings ) ->
     super()
-    chrs                 ?= '\x10\x11\x12\x13\x14'
-    validate.timetunnel_chrs chrs
-    @chrs                 = Array.from chrs
+    validate.timetunnel_settings settings
+    @guards               = settings?.guards  ? '\x10\x11\x12\x13\x14'
+    @intalph              = settings?.intalph ? '0123456789'
+    @guards               = Array.from @guards
     #.......................................................................................................
-    @chr_count            = @chrs.length
+    @chr_count            = @guards.length
     @delta                = ( @chr_count + 1 ) / 2 - 1
-    @master               = @chrs[ @chr_count - @delta - 1 ]
-    @meta_chr_patterns    = ( /// #{esc_re @chrs[ idx ]} ///gu            for idx in [ 0 .. @delta ] )
-    @target_seq_chrs      = ( "#{@master}#{@chrs[ idx + @delta ]}"        for idx in [ 0 .. @delta ] )
+    @master               = @guards[ @chr_count - @delta - 1 ]
+    @meta_chr_patterns    = ( /// #{esc_re @guards[ idx ]} ///gu            for idx in [ 0 .. @delta ] )
+    @target_seq_chrs      = ( "#{@master}#{@guards[ idx + @delta ]}"        for idx in [ 0 .. @delta ] )
     @target_seq_patterns  = ( /// #{esc_re @target_seq_chrs[ idx ]} ///gu for idx in [ 0 .. @delta ] )
-    @cloaked              = @chrs[ 0 ... @delta ]
-    @reveal_pattern       = /// #{esc_re @cloaked[ 0 ]} ( [ 0-9 ]+ ) #{esc_re @cloaked[ 1 ]} ///gu
+    @cloaked              = @guards[ 0 ... @delta ]
+    @reveal_pattern       = /// #{esc_re @cloaked[ 0 ]} ( [ #{esc_re @intalph} ]+ ) #{esc_re @cloaked[ 1 ]} ///gu
     @tunnels              = []
     @_cache               = []
     @_index               = {}
@@ -73,15 +74,16 @@ class @Timetunnel extends Multimix
     R = text
     R = @_reveal_tunneled R
     for idx in [ 0 .. @delta ] by +1
-      R = R.replace @target_seq_patterns[ idx ], @chrs[ idx ]
+      R = R.replace @target_seq_patterns[ idx ], @guards[ idx ]
     return R
 
   #---------------------------------------------------------------------------------------------------------
   _hide_pattern: ( pattern, text ) =>
     R = text
-    R = R.replace pattern, ( _, $1 ) =>
-      cache_idx     = @_store $1
-      cache_idx_txt = INTCODEC.encode cache_idx, 'ÄÖ'
+    R = R.replace pattern, ( P... ) =>
+      ### Choose entire match or first group: ###
+      $1 = if ( P.length is 3 ) then P[ 0 ] else P[ 1 ]
+      cache_idx_txt = @_store $1
       return "#{@cloaked[ 0 ]}#{cache_idx_txt}#{@cloaked[ 1 ]}"
     return R
 
@@ -89,7 +91,10 @@ class @Timetunnel extends Multimix
   _reveal_tunneled: ( text ) =>
     R = text
     while ( R.match @reveal_pattern )?
-      R = R.replace @reveal_pattern, ( _, $1 ) => @_retrieve INTCODEC.decode $1, 'ÄÖ'
+      R = R.replace @reveal_pattern, ( P... ) =>
+        ### Choose entire match or first group: ###
+        $1 = if ( P.length is 3 ) then P[ 0 ] else P[ 1 ]
+        return @_retrieve $1
     return R
 
   #---------------------------------------------------------------------------------------------------------
@@ -106,10 +111,11 @@ class @Timetunnel extends Multimix
     R             = @_cache.length
     @_index[ x ]  = R
     @_cache.push x
-    return R
+    return INTCODEC.encode R, @intalph
 
   #---------------------------------------------------------------------------------------------------------
-  _retrieve: ( idx ) ->
+  _retrieve: ( idx_txt ) ->
+    idx = INTCODEC.decode idx_txt, @intalph
     unless ( idx >= 0 ) and ( idx < @_cache.length )
       throw new Error "µ44292 index out of bounds, got #{rpr idx}"
     return @_cache[ idx ]
