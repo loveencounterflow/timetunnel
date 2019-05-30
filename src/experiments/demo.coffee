@@ -33,7 +33,7 @@ modify = ( text ) ->
     return '' + ( parseInt $0, 10 ) * 12
 
 #--------------------------------------------------------
-original_text = "abcde A plain number 123, two bracketed ones: {123}, {124}"
+original_text = "abCD* A plain number 123, two bracketed ones: {123}, {124}"
 
 #--------------------------------------------------------
 # Hide 'offending' original_text,
@@ -52,29 +52,42 @@ transform = ( tnl, original_text, message ) ->
   log '(4)', rpr uncovered_text
   return uncovered_text
 
-tnl = new TIMETUNNEL.Timetunnel 'abCDe'
+tnl = new TIMETUNNEL.Timetunnel { guards: 'abCD*', intalph: '-|' }
 tnl.add_tunnel ///   \{ ( [0-9]+ ) \}   ///gu
 transform tnl, original_text, "brackets not in group, removed"
 
-tnl = new TIMETUNNEL.Timetunnel 'abCDe'
+tnl = new TIMETUNNEL.Timetunnel { guards: 'abCD*', intalph: '-|' }
 tnl.add_tunnel /// ( \{   [0-9]+   \} ) ///gu
 transform tnl, original_text, "brackets in group, not removed"
 
-tnl = new TIMETUNNEL.Timetunnel 'abCDe'
+tnl = new TIMETUNNEL.Timetunnel { guards: 'abCD*', intalph: '-|' }
 tnl.add_tunnel /// \{   [0-9]+   \} ///gu
 transform tnl, original_text, "no group, equivalent to all grouped"
 
+# tnl = new TIMETUNNEL.Timetunnel { guards: 'abCD*', intalph: 'ab' }
+# tnl.add_tunnel ///   \{ ( [0-9]+ ) \}   ///gu
+# transform tnl, original_text, "brackets not in group, removed"
 
-cs = [
+# tnl = new TIMETUNNEL.Timetunnel { guards: 'abCD*', intalph: 'CD' }
+# tnl.add_tunnel ///   \{ ( [0-9]+ ) \}   ///gu
+# transform tnl, original_text, "brackets not in group, removed"
+
+# tnl = new TIMETUNNEL.Timetunnel { guards: 'abCD*', intalph: 'D*' }
+# tnl.add_tunnel ///   \{ ( [0-9]+ ) \}   ///gu
+# transform tnl, original_text, "brackets not in group, removed"
+
+
+
+gs = [
   'abcde'
   'abCDE'
-  'abCDe'
+  'abCD*'
   'ABcde'
   '()CDE' ]
 text = 'abcdeABCDE-CC-CD'
-for chrs in cs
-  tnl = new TIMETUNNEL.Timetunnel chrs
-  log ( rpr chrs ), ( rpr text ), '->', ( rpr tnl.hide text )
+for guards in gs
+  tnl = new TIMETUNNEL.Timetunnel { guards, }
+  log ( rpr guards ), ( rpr text ), '->', ( rpr tnl.hide text )
 
 
 
