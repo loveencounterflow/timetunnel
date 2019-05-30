@@ -6,7 +6,7 @@
 ############################################################################################################
 CND                       = require 'cnd'
 rpr                       = CND.rpr
-badge                     = 'ICQL/TESTS/MAIN'
+badge                     = 'TIMETUNNEL/TESTS/BASIC'
 debug                     = CND.get_logger 'debug',     badge
 warn                      = CND.get_logger 'warn',      badge
 info                      = CND.get_logger 'info',      badge
@@ -22,7 +22,7 @@ IC                        = require '../..'
 xrpr                      = ( x ) -> inspect x, { colors: yes, breakLength: Infinity, maxArrayLength: Infinity, depth: Infinity, }
 xrpr2                     = ( x ) -> inspect x, { colors: yes, breakLength: 20, maxArrayLength: Infinity, depth: Infinity, }
 #...........................................................................................................
-TUNNELTEXT                = require '../..'
+TIMETUNNEL                = require '../..'
 # require '../exception-handler'
 
 #-----------------------------------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ TUNNELTEXT                = require '../..'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
       [ chrs, text, ] = probe
-      tnl = new TUNNELTEXT.Tunneltext chrs
+      tnl = new TIMETUNNEL.Timetunnel chrs
       result = tnl.hide text
       resolve result
   done()
@@ -55,10 +55,10 @@ TUNNELTEXT                = require '../..'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
       [ chrs, tunnel_names, text, ] = probe
-      tnl = new TUNNELTEXT.Tunneltext chrs
+      tnl = new TIMETUNNEL.Timetunnel chrs
       #.....................................................................................................
       for tunnel_name in tunnel_names
-        tunnel_factory = TUNNELTEXT.tunnels[ tunnel_name ]
+        tunnel_factory = TIMETUNNEL.tunnels[ tunnel_name ]
         tnl.add_tunnel tunnel_factory
       #.....................................................................................................
       result = tnl.hide text
@@ -79,10 +79,10 @@ TUNNELTEXT                = require '../..'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
       [ chrs, tunnel_names, text, ] = probe
-      tnl = new TUNNELTEXT.Tunneltext chrs
+      tnl = new TIMETUNNEL.Timetunnel chrs
       #.....................................................................................................
       for tunnel_name in tunnel_names
-        tunnel_factory = TUNNELTEXT.tunnels[ tunnel_name ]
+        tunnel_factory = TIMETUNNEL.tunnels[ tunnel_name ]
         tnl.add_tunnel tunnel_factory
       #.....................................................................................................
       result = tnl.reveal tnl.hide text
