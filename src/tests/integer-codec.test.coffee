@@ -65,6 +65,7 @@ INTCODEC                  = require '../integer-codec'
 #-----------------------------------------------------------------------------------------------------------
 @[ "INTCODEC.convert() with errors" ] = ( T, done ) ->
   probes_and_matchers = [
+    [["7","7878","x"],"xxxxxxx","number contains illegal digits"]
     [["7","1234","x"],"xxxxxxx","number contains illegal digits"]
     [["xxxxxxx","y","0123456789"],"7","number contains illegal digits"]
     [["12","3456789","."],"............","number contains illegal digits"]
