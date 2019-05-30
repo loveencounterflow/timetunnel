@@ -40,6 +40,8 @@ tunneled_html   = P.parse     tunneled_text
 html            = tnl.reveal  tunneled_html
 ```
 
+XXXXXXXXXXXXXXXXXX hide / modify / reveal cycle
+
 # How Does It Even Work?
 
 TimeTunnel instances are (explicitly or implicitly) set up with five 'guard' characters. These guards are
