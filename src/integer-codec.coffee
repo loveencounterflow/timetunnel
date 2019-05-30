@@ -45,35 +45,70 @@ Dr Zhihua Lai
 # BASE75 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_.,!=-*(){}[]"
 
 #-----------------------------------------------------------------------------------------------------------
-@convert = ( src, srctable, desttable ) ->
-  srclen  = srctable.length
-  destlen = desttable.length
+validate_distinctive_nonempty_chrs = ( x ) ->
+  validate.text x
+  R = Array.from x
+  ### TAINT implement intertype.validate() with custom test, custom message ###
+  unless ( R.length > 1 )
+    throw new Error "µ12009 expected a text with two or more characters, got #{rpr x}"
+  unless ( new Set R ).size is R.length
+    throw new Error "µ12009 expected a text with two or more distinct characters, got #{rpr x}"
+  return R
+
+#-----------------------------------------------------------------------------------------------------------
+validate_is_subset = ( x, y ) ->
+  unless ( x.every ( xx ) -> xx in y )
+    throw new Error "µ33344 number contains illegal digits: #{rpr x}, alphabet #{rpr y}"
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@_convert = ( src, srctable, desttable ) ->
+  srctable  = validate_distinctive_nonempty_chrs srctable
+  desttable = validate_distinctive_nonempty_chrs desttable
+  srclen    = srctable.length
+  destlen   = desttable.length
+  validate.nonempty_text src
+  src       = Array.from src
+  validate_is_subset src, srctable
+  #.........................................................................................................
+  # Remove leading zeros except the last one:
+  src.shift() while ( src.length > 1 ) and ( src[ 0 ] is srctable[ 0 ] )
+  #.........................................................................................................
+  # If srctable equals desttable and leading zeros have been removed, src already contains result: ###
+  return src.join '' if ( srctable is desttable )
+  #.........................................................................................................
   # first convert to base 10
-  val     = 0
-  numlen  = src.length
+  val       = 0
+  numlen    = src.length
   #.........................................................................................................
   for i in [ 0 ... numlen ]
-    val = val * srclen + srctable.indexOf src.charAt i
+    val = val * srclen + srctable.indexOf src[ i ]
   #.........................................................................................................
   if val < 0
     return 0
   #.........................................................................................................
-  if ( destlen is 1 )
-    return desttable[ 0 ].repeat( val )
-  #.........................................................................................................
   # then covert to any base
   r   = val %% destlen
-  R   = desttable.charAt(r)
+  R   = desttable[ r ]
   q   = val // destlen
   while q isnt 0
     r   = q %% destlen
     q   = q // destlen
-    R = ( desttable.charAt r ) + R
+    R = ( desttable[ r ] ) + R
   #.........................................................................................................
   return R
 
+#-----------------------------------------------------------------------------------------------------------
+@encode = ( n, alphabet ) ->
+  validate.count n
+  return @_convert "#{n}", '0123456789', alphabet
 
-@encode_integer = ( n, alphabet ) ->
-  validate.nonnegative_integer n
-  validate.timetunnel_integercodec_alphabet alphabet
+#-----------------------------------------------------------------------------------------------------------
+@decode = ( text, alphabet ) ->
+  return parseInt ( @_convert text, alphabet, '0123456789' ), 10
+
+debug rpr @encode 512,'01'
+debug rpr @decode '10000','01' # 16
+debug rpr @decode '1000000000','01' # 512
+
 
