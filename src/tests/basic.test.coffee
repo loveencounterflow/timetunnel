@@ -90,6 +90,19 @@ TIMETUNNEL                = require '../..'
   done()
 
 #-----------------------------------------------------------------------------------------------------------
+@[ "instantiation: errors" ] = ( T, done ) ->
+  probes_and_matchers = [
+    [['abcde','abc',],null,'not a valid timetunnel_collisionfree_texts',]
+    ]
+  #.........................................................................................................
+  for [ probe, matcher, error, ] in probes_and_matchers
+    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+      [ guards, intalph, ]  = probe
+      tnl                   = new TIMETUNNEL.Timetunnel { guards, intalph, }
+      resolve null
+  done()
+
+#-----------------------------------------------------------------------------------------------------------
 @[ "tunnels: grouping 1" ] = ( T, done ) ->
   transform = ( tnl, original_text, message ) ->
     tunneled_text   = tnl.hide    original_text
