@@ -16,8 +16,9 @@ recognize tags with arbitrary names and standalone tags like `<xy/>`; moreover, 
 normalizes unclosed tags and so on, all of which interferes with your idea of how the thing should work.
 
 This is where TimeTunnel comes in: it applies a simple, configurable text transformation to your text which
-hides 'offending' content. You can then process the text with the parser of your choice, and, that being
-done, reveal the hidden content.
+hides 'offending' content; in this case, a simple regular expression will suffice to find and conceal
+everything that looks like an HTML tag (basically, `/<[^>]*>/`). You can then process the text with the
+parser of your choice, and, that being done, reveal the hidden content.
 
 In essence, the added value of TimeTunnel is that you can prepare strings in such a way that certain text
 processing tasks can be simplified.
