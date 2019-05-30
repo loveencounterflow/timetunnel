@@ -29,7 +29,7 @@ TIMETUNNEL                = require '../..'
 @[ "basic escaping" ] = ( T, done ) ->
   probes_and_matchers = [
     [['abcde','abcdefghxyz'],'cccdcedefghxyz',null,]
-    [['abc',null],null,'not a valid tunneltext_chrs',]
+    [['abc',null],null,'not a valid timetunnel_chrs',]
     ]
   #.........................................................................................................
   for [ probe, matcher, error, ] in probes_and_matchers
@@ -49,7 +49,7 @@ TIMETUNNEL                = require '../..'
     [['abcde',['keep_backslash',], 'abc\\defgh\\xyz'],'cccdcea0befgha1byz',null,]
     [[null,['keep_backslash',], 'abc\\defgh\\xyz'],'abc\u00100\u0011efgh\u00101\u0011yz',null,]
     [['abcde',['remove_backslash','htmlish',], 'abc\\def <tag/> ghxyz'],'cccdcea0bef a1b ghxyz',null,]
-    # [['abc',null],null,'not a valid tunneltext_chrs',]
+    # [['abc',null],null,'not a valid timetunnel_chrs',]
     ]
   #.........................................................................................................
   for [ probe, matcher, error, ] in probes_and_matchers
@@ -73,7 +73,7 @@ TIMETUNNEL                = require '../..'
     [['abcde',['keep_backslash',], 'abc\\defghxyz'],'abc\\defghxyz',null,]
     [[null,['keep_backslash',], 'abc\\defgh\\xyz'],'abc\\defgh\\xyz',null,]
     [['abcde',['remove_backslash','htmlish',], 'abc\\def <tag/> ghxyz'],'abcdef <tag/> ghxyz',null,]
-    # [['abc',null],null,'not a valid tunneltext_chrs',]
+    # [['abc',null],null,'not a valid timetunnel_chrs',]
     ]
   #.........................................................................................................
   for [ probe, matcher, error, ] in probes_and_matchers
