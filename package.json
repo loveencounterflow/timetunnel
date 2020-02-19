@@ -1,6 +1,6 @@
 {
   "name": "timetunnel",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Encode regions of text that match some pattern, recover them after doing some processing",
   "main": "lib/main.js",
   "scripts": {
