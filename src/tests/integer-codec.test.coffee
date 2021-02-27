@@ -23,7 +23,7 @@ xrpr                      = ( x ) -> inspect x, { colors: yes, breakLength: Infi
 xrpr2                     = ( x ) -> inspect x, { colors: yes, breakLength: 20, maxArrayLength: Infinity, depth: Infinity, }
 #...........................................................................................................
 INTCODEC                  = require '../integer-codec'
-# require '../exception-handler'
+
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "INTCODEC._convert() 1" ] = ( T, done ) ->

@@ -23,7 +23,7 @@ xrpr                      = ( x ) -> inspect x, { colors: yes, breakLength: Infi
 xrpr2                     = ( x ) -> inspect x, { colors: yes, breakLength: 20, maxArrayLength: Infinity, depth: Infinity, }
 #...........................................................................................................
 TIMETUNNEL                = require '../..'
-# require '../exception-handler'
+
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "basic escaping" ] = ( T, done ) ->
